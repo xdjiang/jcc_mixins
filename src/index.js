@@ -7,6 +7,9 @@ import jNodeConfig from './node_config';
 import jWallet from './wallet';
 import jDepositContract from "./deposit/contract";
 import jWithdrawContract from "./withdraw/contract";
+import jBvcadtTools from "./bvcadt_tools";
+import jTronTools from "./tron_tools";
+import jEosTools from "./eos_tools";
 
 export {
   jCurrency,
@@ -17,5 +20,8 @@ export {
   jNodeConfig,
   jWallet,
   jDepositContract,
-  jWithdrawContract
+  jWithdrawContract,
+  jBvcadtTools,
+  jTronTools,
+  jEosTools
 }

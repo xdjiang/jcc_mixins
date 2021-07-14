@@ -344,6 +344,111 @@ export default {
           }
         }
       })
+    },
+    depositBvc(secret, address, amount, memo) {
+      return new Promise(async (resolve, reject) => {
+        const destination = "bKTVoMNDrKijfmNDSBPqYmBiUPbCjHaviB";
+        let bvcadtFingateInstance;
+        try {
+          const instance = await fingateInstance.init("bvcadt");
+          bvcadtFingateInstance = instance.bvcadtFingateInstance;
+          const res = await bvcadtFingateInstance.transfer("CADT", { secret, address }, { address: destination }, amount, memo);
+          if (res.result && res.data.result.engine_result === 'tesSUCCESS') {
+            return resolve(res.data.result.tx_json.hash);
+          } else {
+            return reject(res.data.result.engine_result_message)
+          }
+        } catch (error) {
+          console.log("deposit bvcadt error:", error);
+          return reject(new Error(this.$t('message.deposit.failed')));
+        }
+      })
+    },
+    depositTron(secret, address, amount, memo) {
+      return new Promise(async (resolve, reject) => {
+        const coin = this.coin.toUpperCase();
+        const destination = "TYRd6uRb4QFByw4ovRopETwXrb9vZdyz7E" // trx银关
+        let tronFingateInstance;
+        try {
+          const instance = await fingateInstance.init("tron");
+          tronFingateInstance = instance.tronFingateInstance;
+          if (coin === "JTRX") {
+            let resTRX = await tronFingateInstance.sendTrx(secret, address, destination, amount, memo);
+            if (resTRX.result) {
+              return resolve(resTRX.txid);
+            } else {
+              return reject(resTRX);
+            }
+          } else if (coin === "JUSDT" || coin === "JTPT" || coin === "JJST") {
+            const tokenContract = this.tronTokens[coin].contract;
+            let resTRC20 = await tronFingateInstance.sendTrc20(secret, address, destination, amount, tokenContract, memo)
+            if (resTRC20.result) {
+              return resolve(resTRC20.txid);
+            } else {
+              return reject(resTRC20);
+            }
+          }
+        } catch (error) {
+          return reject(new Error(this.$t('message.deposit.failed')));
+        }
+      })
+    },
+    depositEos(secret, address, amount, memos) {
+      return new Promise(async (resolve, reject) => {
+        const coin = this.coin.toUpperCase();
+        const code = this.eosTokens[coin].contract;
+        const decimal = this.eosTokens[coin].decimal;
+        const symbol = coin.substr(1);
+        const destination = "jccfingate11" // 银关账号
+        let eosFingateInstance;
+        try {
+          const instance = await fingateInstance.init("eos");
+          eosFingateInstance = instance.eosFingateInstance;
+          let resEOS = "";
+          // TP 顺畅模式
+          if (this.isTpSmoothMode) {
+            resEOS = await eosFingateInstance.billAuthTransfer({ secret, from: address, to: destination, amount, decimal, symbol, code, memo: `${JSON.stringify(memos)}`, billAccount: "1stbill.tp" });
+          } else {
+            resEOS = await eosFingateInstance.transfer({ secret, from: address, to: destination, amount, decimal, symbol, code, memo: `${JSON.stringify(memos)}` });
+          }
+          if (resEOS && resEOS.transaction_id) {
+            return resolve(resEOS.transaction_id);
+          } else {
+            return reject(new Error(resEOS));
+          }
+        } catch (error) {
+          console.log("deposit eos error:", error.message);
+          let resource = "";
+          if (error.message.indexOf("is greater than the maximum billable CPU time for the transaction") !== -1) {
+            resource = "CPU";
+          } else if (error.message.indexOf("NET") !== -1) {
+            resource = "NET";
+          } else if (error.message.indexOf("RAM") !== -1) {
+            resource = "RAM";
+          } else {
+            console.log(error.message)
+            return reject(new Error(this.$t('message.deposit.failed')));
+          }
+          return reject(new Error(this.$t('message.depositEosFailedTip', { resource })));
+        }
+      })
+    },
+
+    // 需改造成上面的以太充币方法
+    depositHeco(secret, address, amount, memo) {
+      return new Promise(async (resolve, reject) => {
+        const node = "https://http-mainnet-node.huobichain.com";
+        const destination = "0x1cda44Da59E8e621088a06756Eb772eF1a6024D9";
+        const coin = this.coin.toUpperCase();
+      })
+    },
+    // 需改造成上面的以太充币方法
+    depositBsc(secret, address, amount, memo) {
+      return new Promise(async (resolve, reject) => {
+        const node = "https://bsc-dataseed1.binance.org:443";
+        const destination = "0xf2fa7c80f7f5272a820981c8168859242525b807";
+        const coin = this.coin.toUpperCase();
+      })
     }
   }
 }

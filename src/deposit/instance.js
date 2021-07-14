@@ -43,6 +43,27 @@ const fingateInstance = (() => {
           }
           return resolve(obj);
         })
+      } else if (chain === "bvcadt" && !obj.bvcadtFingateInstance) {
+        const bvcadtFingateInstance = require("./bvcadt_tools");
+        bvcadtFingateInstance.init();
+        obj = {
+          bvcadtFingateInstance
+        }
+        return resolve(obj);
+      } else if (chain = "tron" && !obj.tronFingateInstance) {
+        const tronFingateInstance = require("./tron_tools");
+        tronFingateInstance.init();
+        obj = {
+          tronFingateInstance
+        }
+        return resolve(obj);
+      } else if (chain === "eos" && !obj.eosFingateInstance) {
+        const eosFingateInstance = require("./eos_tools");
+        eosFingateInstance.init();
+        obj = {
+          eosFingateInstance
+        }
+        return resolve(obj);
       } else {
         return resolve(obj);
       }
