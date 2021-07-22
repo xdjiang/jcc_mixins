@@ -1,19 +1,19 @@
 const fingateInstance = (() => {
   let obj = {};
 
-  const init = (chain) => {
+  const init = (chain, node) => {
     return new Promise((resolve, reject) => {
       if (chain === "call" && !obj.callFingateInstance) {
         import("jcc-call-utils").then(m => {
           const CallFingate = m.CallFingate;
-          const callFingateInstance = new CallFingate("wss://s1.callchain.live:5020");
+          const callFingateInstance = new CallFingate(node);
           obj = { callFingateInstance }
           return resolve(obj);
         })
       } else if (chain === "ripple" && !obj.rippleFingateInstance) {
         import("jcc-ripple-utils").then(m => {
           const RippleFingate = m.RippleFingate;
-          const rippleFingateInstance = new RippleFingate('wss://s1.ripple.com');
+          const rippleFingateInstance = new RippleFingate(node);
           obj = {
             rippleFingateInstance
           }
@@ -23,7 +23,7 @@ const fingateInstance = (() => {
         import("jcc-stream-utils").then(m => {
           const StreamFingate = m.StreamFingate;
           const stmFingateInstance = new StreamFingate({
-            host: 'nodew.labs.stream',
+            host: node,
             port: 443,
             secure: true
           });
@@ -36,7 +36,7 @@ const fingateInstance = (() => {
       } else if (chain === "bizain" && !obj.bizainFingateInstance) {
         import("jcc-bizain-utils").then(m => {
           const BizainFingate = m.BizainFingate;
-          const bizainFingateInstance = new BizainFingate('wss://bizain.net/bc/ws');
+          const bizainFingateInstance = new BizainFingate(node);
           bizainFingateInstance.init();
           obj = {
             bizainFingateInstance
@@ -45,21 +45,21 @@ const fingateInstance = (() => {
         })
       } else if (chain === "bvcadt" && !obj.bvcadtFingateInstance) {
         const bvcadtFingateInstance = require("./bvcadt_tools");
-        bvcadtFingateInstance.init();
+        bvcadtFingateInstance.init(node);
         obj = {
           bvcadtFingateInstance
         }
         return resolve(obj);
       } else if (chain = "tron" && !obj.tronFingateInstance) {
         const tronFingateInstance = require("./tron_tools");
-        tronFingateInstance.init();
+        tronFingateInstance.init(node);
         obj = {
           tronFingateInstance
         }
         return resolve(obj);
       } else if (chain === "eos" && !obj.eosFingateInstance) {
         const eosFingateInstance = require("./eos_tools");
-        eosFingateInstance.init();
+        eosFingateInstance.init(node);
         obj = {
           eosFingateInstance
         }

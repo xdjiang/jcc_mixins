@@ -10,25 +10,25 @@ var testNet = false;
 module.exports = {
   _server: null,
   _remote: null,
-  init: function() {
-    this._server = "https://r1-cors.bvcadt.com/";
+  init: function (node) {
+    this._server = node;
     this._remote = axios.create({
       timeout: 60000
     })
   },
   _native: 'BVCADT',
   _drops: 1000000,
-  createWallet: function() {
+  createWallet: function () {
     try {
       return crypto.generateAddress().wallet;
     } catch (error) {
       return null;
     }
   },
-  isValidAddress: function(address) {
+  isValidAddress: function (address) {
     return crypto.isValidAddress(address)
   },
-  isValidSecret: function(secret) {
+  isValidSecret: function (secret) {
     try {
       var w = crypto.generateAddress(secret).wallet;
       return crypto.isValidAddress(w.address)
@@ -36,7 +36,7 @@ module.exports = {
       return false
     }
   },
-  getWallet: function(secret) {
+  getWallet: function (secret) {
     var self = this;
     if (!self.isValidSecret(secret)) {
       console.log('getWallet:secret is invalid');
@@ -50,7 +50,7 @@ module.exports = {
     }
   },
 
-  getAddress: function(secret) {
+  getAddress: function (secret) {
     var self = this;
     if (!self.isValidSecret(secret)) {
       console.log('getAddress:secret is invalid');
@@ -63,7 +63,7 @@ module.exports = {
       return null;
     }
   },
-  getAccountInfo: async function(address) {
+  getAccountInfo: async function (address) {
     var self = this;
     try {
       var data = JSON.stringify({
@@ -82,7 +82,7 @@ module.exports = {
       return e;
     }
   },
-  getBalance: async function(address) {
+  getBalance: async function (address) {
     var self = this;
     var info = await self.getAccountInfo(address)
     if (info) {
@@ -97,7 +97,7 @@ module.exports = {
    * @param {*} dest 通证的issuer, CADT testnet是bKhzHBtWgiBEVAgDDRR3ioMbbv3wxf9VoX，mainnet是b9JGrM26e5hkweEBGPwfVfiyyXzpmmuG33
    * @param {*} amount 数量，即收取通证的上限
    */
-  setTrustline: async function(currency, src, dest, amount) {
+  setTrustline: async function (currency, src, dest, amount) {
     var self = this;
     if (!self.isValidAddress(src.address)) {
       return null;
@@ -175,7 +175,7 @@ module.exports = {
     engine_result_code: 0,
     engine_result_message:The transaction was applied. Only final in a validated ledger
  */
-  transfer: async function(currency, src, dest, amount, memo) {
+  transfer: async function (currency, src, dest, amount, memo) {
     var self = this;
     if (!self.isValidAddress(src.address)) {
       console.log('src address is invalid');
@@ -256,7 +256,7 @@ module.exports = {
    *    ledger(option): specify ledger, ledger can be:
    *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated
    */
-  getHistory: async function(address, idxFrom, idxTo) {
+  getHistory: async function (address, idxFrom, idxTo) {
     var self = this
 
     if (!self.isValidAddress(address)) {

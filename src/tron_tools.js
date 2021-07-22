@@ -2,9 +2,9 @@ const TronWeb = require("tronweb");
 const BigNumber = require("bignumber.js");
 module.exports = {
   tronWeb: null,
-  init() {
+  init(node) {
     this.tronWeb = new TronWeb({
-      fullHost: 'https://trx.mytokenpocket.vip'
+      fullHost: node
     });
   },
   // 创建新Tron钱包
@@ -107,8 +107,8 @@ module.exports = {
         result
       } = await this.tronWeb.transactionBuilder.triggerSmartContract(
         this.tronWeb.address.toHex(contract), 'transfer(address,uint256)', {
-          feeLimit: this.tronWeb.toSun(10)
-        },
+        feeLimit: this.tronWeb.toSun(10)
+      },
         [{
           type: 'address',
           value: to

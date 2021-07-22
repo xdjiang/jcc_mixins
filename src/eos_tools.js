@@ -4,7 +4,7 @@ const BigNumber = require("bignumber.js");
 const { PrivateKey } = require('eosjs/dist/eosjs-key-conversions');
 const { RpcError } = require("eosjs/dist/eosjs-rpcerror");
 
-JsonRpc.prototype.fetch = async function(path, body) {
+JsonRpc.prototype.fetch = async function (path, body) {
   let response;
   let json;
   try {
@@ -31,8 +31,8 @@ JsonRpc.prototype.fetch = async function(path, body) {
 module.exports = {
   rpc: null,
   safeApi: null,
-  init() {
-    const rpc = new JsonRpc('https://eospush.jccdex.cn:8550');
+  init(node) {
+    const rpc = new JsonRpc(node);
     this.rpc = rpc;
     this.safeApi = new SafeApi({ rpc });
   },
