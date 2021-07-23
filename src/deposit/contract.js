@@ -145,7 +145,6 @@ export default {
         const minLimit = 0.1;
         const scAddress = "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a";
         this.changeLoadingState(this.$t("message.deposit.request_balance", { name: "MOAC" }));
-        fingateInstance.destroy();
         const instance = await fingateInstance.initWithContract("moac", node, scAddress)
         const { moacInstance, moacFingateInstance } = instance;
         const balance = await moacInstance.getBalance(address);
@@ -216,7 +215,6 @@ export default {
         const scAddress = "0x3907acb4c1818adf72d965c08e0a79af16e7ffb8";
         const minLimit = this.ethBalanceMinLimit || 0.04;
         this.changeLoadingState(this.$t("message.deposit.request_balance", { name: "ETH" }));
-        fingateInstance.destroy();
         const instance = await fingateInstance.initWithContract("ethereum", node, scAddress)
         const { ethereumInstance, ethereumFingateInstance } = instance;
         let ethBalance = await ethereumInstance.getBalance(address);
@@ -376,7 +374,6 @@ export default {
         const node = this.getChainHost("hecoHosts");
         const scAddress = "0x1cda44Da59E8e621088a06756Eb772eF1a6024D9";
         this.changeLoadingState(this.$t("message.deposit.request_balance", { name: "HECO" }));
-        fingateInstance.destroy();
         const instance = await fingateInstance.initWithContract("ethereum", node, scAddress)
         const { ethereumInstance, ethereumFingateInstance } = instance;
         let hecoBalance = await ethereumInstance.getBalance(address);
@@ -431,7 +428,6 @@ export default {
         const node = this.getChainHost("bscHosts");
         const scAddress = "0xf2fa7c80f7f5272a820981c8168859242525b807";
         this.changeLoadingState(this.$t("message.deposit.request_balance", { name: "BSC" }));
-        fingateInstance.destroy();
         const instance = await fingateInstance.initWithContract("ethereum", node, scAddress)
         const { ethereumInstance, ethereumFingateInstance } = instance;
         let bscBalance = await ethereumInstance.getBalance(address);
