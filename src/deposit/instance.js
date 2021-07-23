@@ -50,7 +50,7 @@ const fingateInstance = (() => {
           bvcadtFingateInstance
         }
         return resolve(obj);
-      } else if (chain = "tron" && !obj.tronFingateInstance) {
+      } else if (chain === "tron" && !obj.tronFingateInstance) {
         const tronFingateInstance = require("./tron_tools");
         tronFingateInstance.init(node);
         obj = {
