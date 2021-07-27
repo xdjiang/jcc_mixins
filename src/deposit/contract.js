@@ -10,7 +10,7 @@ export default {
       tronTokens: {},
       eosTokens: {},
       bscTokens: {},
-      hecoTokens: {},
+      hecoTokens: {}
     }
   },
   methods: {

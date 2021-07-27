@@ -1,7 +1,7 @@
 const fingateInstance = (() => {
   let obj = {};
 
-  const init = (chain, node) => {
+  const init = (chain, node = undefined) => {
     return new Promise((resolve, reject) => {
       if (chain === "call" && !obj.callFingateInstance) {
         import("jcc-call-utils").then(m => {
@@ -44,26 +44,29 @@ const fingateInstance = (() => {
           return resolve(obj);
         })
       } else if (chain === "bvcadt" && !obj.bvcadtFingateInstance) {
-        const bvcadtFingateInstance = require("./bvcadt_tools");
-        bvcadtFingateInstance.init(node);
-        obj = {
-          bvcadtFingateInstance
-        }
-        return resolve(obj);
+        import("@/src/bvcadt_tools.js").then(m => {
+          const bvcadtFingateInstance = m.init(node)
+          obj = {
+            bvcadtFingateInstance
+          }
+          return resolve(obj);
+        })
       } else if (chain === "tron" && !obj.tronFingateInstance) {
-        const tronFingateInstance = require("./tron_tools");
-        tronFingateInstance.init(node);
-        obj = {
-          tronFingateInstance
-        }
-        return resolve(obj);
+        import("@/src/tron_tools.js").then(m => {
+          const tronFingateInstance = m.init(node);
+          obj = {
+            tronFingateInstance
+          }
+          return resolve(obj);
+        })
       } else if (chain === "eos" && !obj.eosFingateInstance) {
-        const eosFingateInstance = require("./eos_tools");
-        eosFingateInstance.init(node);
-        obj = {
-          eosFingateInstance
-        }
-        return resolve(obj);
+        import("@/src/eos_tools.js").then(m => {
+          const eosFingateInstance = m.init(node);
+          obj = {
+            eosFingateInstance
+          }
+          return resolve(obj);
+        })
       } else {
         return resolve(obj);
       }

@@ -23,8 +23,17 @@ const testConfig = require("../config");
 const getters = {
   hosts() {
     return {
-      ethHosts: ["localhost"],
-      moacHosts: ["localhost"]
+      ethHosts: ["ethHost"],
+      moacHosts: ["moacHost"],
+      bvcadtHosts: ["https://bvcadtHost"],
+      tronHosts: ["https://tronHost"],
+      eosHosts: ["https://eosHost"],
+      callHosts: ["wss://callHost"],
+      streamHosts: ["streamHost"],
+      bscHosts: ["https://bscHost"],
+      hecoHosts: ["https://hecoHost"],
+      bizainHosts: ["wss://bizainHost"],
+      rippleHosts: ["wss://rippleHost"]
     }
   }
 }
@@ -57,85 +66,57 @@ describe('Deposit', () => {
   const amount = "1";
   const memo = testConfig.testMemo;
 
-  describe("test deposit api", function() {
+  describe("test deposit api", function () {
 
+    // 各链的contract改为配置中动态获取，取消了"test tokens"
 
-    describe("test tokens", function() {
-      it("check token contract", function() {
-        expect(vm.ethTokens).toEqual({
-          JETH: {
-            contract: "0x0000000000000000000000000000000000000000"
-          },
-          JMOAC: {
-            contract: "0xCBcE61316759D807c474441952cE41985bBC5a40"
-          },
-          JJCC: {
-            contract: "0x9BD4810a407812042F938d2f69f673843301cfa6"
-          },
-          JEOS: {
-            contract: "0x86Fa049857E0209aa7D9e616F7eb3b3B78ECfdb0"
-          },
-          JCALL: {
-            contract: "0xcE3D828Bdb96d7c6C20Ecbfd63e572dc1C8AbD32"
-          },
-          JEKT: {
-            contract: "0x4ecdb6385f3db3847f9c4a9bf3f9917bb27a5452"
-          },
-          JDABT: {
-            contract: "0x1C6890825880566dd6Ad88147E0a6acE7930b7c0"
-          },
-          JBIZ: {
-            contract: "0x399f9A95305114efAcB91d1d6C02CBe234dD36aF"
-          },
-          JSLASH: {
-            contract: "0xE222e2e3517f5AF5e3abc667adF14320C848D6dA"
-          },
-          JGSGC: {
-            contract: "0x0ec2a5ec6a976d6d4c101fb647595c9d8d21779e"
-          },
-          JUSDT: {
-            contract: "0xdAC17F958D2ee523a2206206994597C13D831ec7"
-          },
-          JHT: {
-            contract: "0x6f259637dcd74c767781e37bc6133cd6a68aa161"
-          },
-          JGN: {
-            contract: "0x364b810aCBad792b8eEac401c7d4E5E001B92b67"
-          },
-          JTPT: {
-            contract: "0x4161725d019690a3e0de50f6be67b07a86a9fae1"
-          }
-        })
-        expect(vm.moacTokens).toEqual({
-          JSNRC: {
-            contract: "0x1b9bae18532eeb8cd4316a20678a0c43f28f0ae2"
-          },
-          JCKM: {
-            contract: "0x4d206d18fd036423aa74815511904a2a40e25fb1"
-          },
-          JFST: {
-            contract: "0x4c6007cea426e543551f2cb6392e6d6768f74706"
-          },
-          JPG: {
-            contract: "0x8bbea7dbb25e4f0006d77e00083808e7eb0d45e8"
-          }
-        })
+    describe("test getChainHost", function () {
+      it("get eth host if inputed hosts Name is ethHosts", function () {
+        expect(vm.getChainHost("ethHosts")).toBe("https://ethHost")
+      })
+
+      it("get moac host if inputed hosts Name is moacHosts", function () {
+        expect(vm.getChainHost("moacHosts")).toBe("https://moacHost")
+      })
+
+      it("get bvcadt host if inputed hosts Name is bvcadtHosts", function () {
+        expect(vm.getChainHost("bvcadtHosts")).toBe("https://bvcadtHost")
+      })
+
+      it("get tron host if inputed hosts Name is tronHosts", function () {
+        expect(vm.getChainHost("tronHosts")).toBe("https://tronHost")
+      })
+
+      it("get eos host if inputed hosts Name is eosHosts", function () {
+        expect(vm.getChainHost("eosHosts")).toBe("https://eosHost")
+      })
+
+      it("get call host if inputed hosts Name is callHosts", function () {
+        expect(vm.getChainHost("callHosts")).toBe("wss://callHost")
+      })
+
+      it("get stream host if inputed hosts Name is streamHosts", function () {
+        expect(vm.getChainHost("streamHosts")).toBe("streamHost")
+      })
+
+      it("get bsc host if inputed hosts Name is bscHosts", function () {
+        expect(vm.getChainHost("bscHosts")).toBe("https://bscHost")
+      })
+
+      it("get heco host if inputed hosts Name is hecoHosts", function () {
+        expect(vm.getChainHost("hecoHosts")).toBe("https://hecoHost")
+      })
+
+      it("get bizain host if inputed hosts Name is bizainHosts", function () {
+        expect(vm.getChainHost("bizainHosts")).toBe("wss://bizainHost")
+      })
+
+      it("get ripple host if inputed hosts Name is rippleHosts", function () {
+        expect(vm.getChainHost("rippleHosts")).toBe("wss://rippleHost")
       })
     })
 
-    describe("test getMoacHost", function() {
-      it("if the input hosts is not empty", function() {
-        expect(vm.getMoacHost()).toBe("https://localhost")
-      })
-    })
-
-    describe("test getEthHost", function() {
-      it("if the input hosts is not empty", function() {
-        expect(vm.getEthHost()).toBe("https://localhost")
-      })
-    })
-
-    describe("test depositCall api", function() {
+    describe("test depositCall api", function () {
       const Fingate = require('jcc-call-utils').CallFingate;
       const secret = testConfig.testCallSecret;
       const address = testConfig.testCallAddress;
@@ -146,11 +127,11 @@ describe('Deposit', () => {
         fingateInstance.destroy();
       });
 
-      it("depositCall shoude be a function", function() {
+      it("depositCall shoude be a function", function () {
         expect(typeof vm.depositCall).toBe("function");
       });
 
-      it("reject error if deposit amount is greater than balance", async function() {
+      it("reject error if deposit amount is greater than balance", async function () {
         const stub = sandbox.stub(Fingate.prototype, "getCallBalance");
         stub.resolves("0");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -172,7 +153,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("reject error if deposit failed", async function() {
+      it("reject error if deposit failed", async function () {
         const stub = sandbox.stub(Fingate.prototype, "getCallBalance");
         stub.resolves("1");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -191,7 +172,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("resolve hash if deposit success", async function() {
+      it("resolve hash if deposit success", async function () {
         const stub = sandbox.stub(Fingate.prototype, "getCallBalance");
         stub.resolves("1");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -213,7 +194,7 @@ describe('Deposit', () => {
       });
     })
 
-    describe("test depositRipple api", function() {
+    describe("test depositRipple api", function () {
       const Fingate = require('jcc-ripple-utils').RippleFingate;
       const secret = testConfig.testRippleSecret;
       const address = testConfig.testRippleAddress;
@@ -225,11 +206,11 @@ describe('Deposit', () => {
         fingateInstance.destroy();
       });
 
-      it("depositRipple shoude be a function", function() {
+      it("depositRipple shoude be a function", function () {
         expect(typeof vm.depositRipple).toBe("function");
       })
 
-      it("reject error if deposit amount is greater than balance", async function() {
+      it("reject error if deposit amount is greater than balance", async function () {
 
         const stub = sandbox.stub(Fingate.prototype, "getXrpBalance");
         stub.resolves("0");
@@ -252,7 +233,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("reject error if the balance is less than the sum of amount and limit", async function() {
+      it("reject error if the balance is less than the sum of amount and limit", async function () {
         const stub = sandbox.stub(Fingate.prototype, "getXrpBalance");
         stub.resolves("21.099999999999999999");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -274,7 +255,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("reject error if deposit failed", async function() {
+      it("reject error if deposit failed", async function () {
         const stub = sandbox.stub(Fingate.prototype, "getXrpBalance");
         stub.resolves("25");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -293,7 +274,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("resolve hash if deposit success", async function() {
+      it("resolve hash if deposit success", async function () {
         const stub = sandbox.stub(Fingate.prototype, "getXrpBalance");
         stub.resolves("21.1");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -315,7 +296,7 @@ describe('Deposit', () => {
       });
     })
 
-    describe("test depositBizain api", function() {
+    describe("test depositBizain api", function () {
       const Fingate = require('jcc-bizain-utils').BizainFingate;
       const secret = testConfig.testBizainSecret;
       const address = testConfig.testBizainAddress;
@@ -327,11 +308,11 @@ describe('Deposit', () => {
         fingateInstance.destroy();
       });
 
-      it("depositBizain shoude be a function", function() {
+      it("depositBizain shoude be a function", function () {
         expect(typeof vm.depositBizain).toBe("function");
       })
 
-      it("reject error if deposit amount is greater than balance", async function() {
+      it("reject error if deposit amount is greater than balance", async function () {
         const stub = sandbox.stub(Fingate.prototype, "balanceOf");
         stub.resolves("0");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -354,7 +335,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("reject error if deposit failed", async function() {
+      it("reject error if deposit failed", async function () {
         const stub = sandbox.stub(Fingate.prototype, "balanceOf");
         stub.resolves("1");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -374,7 +355,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("resolve hash if deposit success", async function() {
+      it("resolve hash if deposit success", async function () {
         const stub = sandbox.stub(Fingate.prototype, "balanceOf");
         stub.resolves("1");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -397,7 +378,7 @@ describe('Deposit', () => {
       });
     })
 
-    describe("test depositStream api", function() {
+    describe("test depositStream api", function () {
       const Fingate = require('jcc-stream-utils').StreamFingate;
       const secret = testConfig.testStreamSecret;
       const address = testConfig.testStreamAddress;
@@ -409,11 +390,11 @@ describe('Deposit', () => {
         fingateInstance.destroy();
       });
 
-      it("depositStream shoude be a function", function() {
+      it("depositStream shoude be a function", function () {
         expect(typeof vm.depositStream).toBe("function");
       })
 
-      it("reject error if deposit amount is greater than balance", async function() {
+      it("reject error if deposit amount is greater than balance", async function () {
         const stub = sandbox.stub(Fingate.prototype, "getBalance");
         stub.resolves("0");
         const stub1 = sandbox.stub(Fingate.prototype, "connect");
@@ -434,7 +415,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("reject error if deposit failed", async function() {
+      it("reject error if deposit failed", async function () {
         sandbox.stub(Fingate.prototype, "connect");
         const stub = sandbox.stub(Fingate.prototype, "getBalance");
         stub.resolves("1");
@@ -452,7 +433,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("resolve hash if deposit success", async function() {
+      it("resolve hash if deposit success", async function () {
         sandbox.stub(Fingate.prototype, "connect");
         const stub = sandbox.stub(Fingate.prototype, "getBalance");
         stub.resolves("1");
@@ -473,7 +454,7 @@ describe('Deposit', () => {
       });
     })
 
-    describe("test depositEthereum api", function() {
+    describe("test depositEthereum api", function () {
       const Ethereum = require('jcc-ethereum-utils').Ethereum;
       const Fingate = require('jcc-ethereum-utils').Fingate;
       const ERC20 = require('jcc-ethereum-utils').ERC20;
@@ -503,11 +484,11 @@ describe('Deposit', () => {
         fingateInstance.destroy();
       });
 
-      it("depositEthereum shoude be a function", function() {
+      it("depositEthereum shoude be a function", function () {
         expect(typeof vm.depositEthereum).toBe("function");
       })
 
-      it("deposit eth: reject error if deposit amount is greater than balance", async function() {
+      it("deposit eth: reject error if deposit amount is greater than balance", async function () {
         wrapper.setData({ coin: "jeth" })
         wrapper.setProps({ coin: 'jeth' });
         const spy = sandbox.spy(vm, "changeLoadingState");
@@ -534,7 +515,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit eth: reject error if the balance is less than the sum of amount and limit", async function() {
+      it("deposit eth: reject error if the balance is less than the sum of amount and limit", async function () {
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("1.03999999999999");
         const spy = sandbox.spy(vm, "changeLoadingState");
@@ -554,7 +535,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit eth: reject error if has pending order", async function() {
+      it("deposit eth: reject error if has pending order", async function () {
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("1.04");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -575,7 +556,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit eth: reject error if deposit failed", async function() {
+      it("deposit eth: reject error if deposit failed", async function () {
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("1.04");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -594,7 +575,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit eth: resolve hash if deposit success", async function() {
+      it("deposit eth: resolve hash if deposit success", async function () {
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("1.04");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -615,8 +596,8 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if the balance of eth is less than limit", async function() {
-        wrapper.setData({ coin: "jjcc" })
+      it("deposit erc20: reject error if the balance of eth is less than limit", async function () {
+        wrapper.setData({ coin: "jjcc", ethTokens: { JJCC: { contract: jccContract } } })
         wrapper.setProps({ coin: 'jjcc' });
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("0.0399999999999");
@@ -640,7 +621,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if has pending order", async function() {
+      it("deposit erc20: reject error if has pending order", async function () {
         const spy = sandbox.spy(vm, "changeLoadingState");
         const spy1 = sandbox.spy(ERC20.prototype, "balanceOf");
         const spy2 = sandbox.spy(Fingate.prototype, "depositToken");
@@ -666,7 +647,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if deposit amount is greater than balance", async function() {
+      it("deposit erc20: reject error if deposit amount is greater than balance", async function () {
         const spy = sandbox.spy(vm, "changeLoadingState");
         const spy1 = sandbox.spy(Fingate.prototype, "depositToken");
         const spy2 = sandbox.spy(ERC20.prototype, "transfer");
@@ -689,7 +670,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if transfer failed", async function() {
+      it("deposit erc20: reject error if transfer failed", async function () {
         const spy = sandbox.spy(Fingate.prototype, "depositToken");
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("0.04");
@@ -711,7 +692,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: resolve hash if depositToken first success and depositToken should be called only once", async function() {
+      it("deposit erc20: resolve hash if depositToken first success and depositToken should be called only once", async function () {
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("0.04");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -733,7 +714,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: resolve hash if depositToken first failed and second success and depositToken should be called twice", async function() {
+      it("deposit erc20: resolve hash if depositToken first failed and second success and depositToken should be called twice", async function () {
         const stub = sandbox.stub(Ethereum.prototype, "getBalance");
         stub.resolves("0.04");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -760,7 +741,7 @@ describe('Deposit', () => {
       });
     })
 
-    describe("test depositMoac api", function() {
+    describe("test depositMoac api", function () {
       const Moac = require('jcc-moac-utils').Moac;
       const Fingate = require('jcc-moac-utils').Fingate;
       const ERC20 = require('jcc-moac-utils').ERC20;
@@ -776,11 +757,11 @@ describe('Deposit', () => {
         fingateInstance.destroy();
       });
 
-      it("depositMoac shoude be a function", function() {
+      it("depositMoac shoude be a function", function () {
         expect(typeof vm.depositMoac).toBe("function");
       })
 
-      it("deposit moac: reject error if deposit amount is greater than balance", async function() {
+      it("deposit moac: reject error if deposit amount is greater than balance", async function () {
         wrapper.setData({ coin: "jmoac" })
         wrapper.setProps({ coin: 'jmoac' });
         const stub = sandbox.stub(Moac.prototype, "getBalance");
@@ -807,7 +788,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit moac: reject error if the balance is less than the sum of amount and limit", async function() {
+      it("deposit moac: reject error if the balance is less than the sum of amount and limit", async function () {
         const stub = sandbox.stub(Moac.prototype, "getBalance");
         stub.resolves("1.0999999999999");
         const spy = sandbox.spy(vm, "changeLoadingState");
@@ -827,7 +808,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit moac: reject error if has pending order", async function() {
+      it("deposit moac: reject error if has pending order", async function () {
         const stub = sandbox.stub(Moac.prototype, "getBalance");
         stub.resolves("1.1");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -848,7 +829,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit moac: reject error if deposit failed", async function() {
+      it("deposit moac: reject error if deposit failed", async function () {
         const stub = sandbox.stub(Moac.prototype, "getBalance");
         stub.resolves("1.1");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -872,7 +853,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit moac: resolve hash if deposit success", async function() {
+      it("deposit moac: resolve hash if deposit success", async function () {
         const stub = sandbox.stub(Moac.prototype, "getBalance");
         stub.resolves("1.1");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -892,8 +873,8 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if the balance of moac is less than limit", async function() {
-        wrapper.setData({ coin: "jfst" })
+      it("deposit erc20: reject error if the balance of moac is less than limit", async function () {
+        wrapper.setData({ coin: "jfst", moacTokens: { JFST: { contract: fstContract } } })
         wrapper.setProps({ coin: 'jfst' });
         const stub = sandbox.stub(Moac.prototype, "getBalance");
         stub.resolves("0.0999999999999");
@@ -916,7 +897,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if has pending order", async function() {
+      it("deposit erc20: reject error if has pending order", async function () {
         const spy = sandbox.spy(vm, "changeLoadingState");
         const spy1 = sandbox.spy(Fingate.prototype, "init");
         const spy2 = sandbox.spy(ERC20.prototype, "init");
@@ -946,7 +927,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if deposit amount is greater than balance", async function() {
+      it("deposit erc20: reject error if deposit amount is greater than balance", async function () {
         const spy = sandbox.spy(vm, "changeLoadingState");
         const spy1 = sandbox.spy(Fingate.prototype, "depositToken");
         const spy2 = sandbox.spy(ERC20.prototype, "transfer");
@@ -969,7 +950,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: reject error if transfer failed", async function() {
+      it("deposit erc20: reject error if transfer failed", async function () {
         const spy = sandbox.spy(vm, "changeLoadingState");
         const spy1 = sandbox.spy(Fingate.prototype, "depositToken");
 
@@ -996,7 +977,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: resolve hash if depositToken first success and depositToken should be called only once", async function() {
+      it("deposit erc20: resolve hash if depositToken first success and depositToken should be called only once", async function () {
         const stub = sandbox.stub(Moac.prototype, "getBalance");
         stub.resolves("0.1");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");
@@ -1018,7 +999,7 @@ describe('Deposit', () => {
         }
       });
 
-      it("deposit erc20: resolve hash if depositToken first failed and second success and depositToken should be called twice", async function() {
+      it("deposit erc20: resolve hash if depositToken first failed and second success and depositToken should be called twice", async function () {
         const stub = sandbox.stub(Moac.prototype, "getBalance");
         stub.resolves("0.1");
         const stub1 = sandbox.stub(Fingate.prototype, "depositState");

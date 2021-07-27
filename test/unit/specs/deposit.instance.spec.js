@@ -5,16 +5,22 @@ import CallFingate from "jcc-call-utils";
 import BizainFingate from "jcc-bizain-utils";
 import StreamFingate from "jcc-stream-utils";
 import RippleFingate from "jcc-ripple-utils";
+import BvcadtFingate from "@/src/bvcadt_tools";
+import TronFingate from "@/src/tron_tools";
+import EosFingate from "@/src/eos_tools";
 
 describe('deposit instance', () => {
-  describe("test init", function() {
-    it("should be inited if call instance isn't inited", async function() {
+  describe("test init", function () {
+    const tronNode = "https://trx.mytokenpocket.vip";
+    const eosNode = "https://eospush.jccdex.cn:8550";
+
+    it("should be inited if call instance isn't inited", async function () {
       const instance = await fingateInstance.init("call");
       const fingate = instance.callFingateInstance;
       expect(fingate instanceof CallFingate).toBe(true);
     })
 
-    it("should be inited once if call instance is inited", async function() {
+    it("should be inited once if call instance is inited", async function () {
       const instance = await fingateInstance.init("call");
       const fingate = instance.callFingateInstance;
       const instance1 = await fingateInstance.init("call");
@@ -22,13 +28,13 @@ describe('deposit instance', () => {
       expect(fingate).toBe(fingate1);
     })
 
-    it("should be inited if ripple instance isn't inited", async function() {
+    it("should be inited if ripple instance isn't inited", async function () {
       const instance = await fingateInstance.init("ripple");
       const fingate = instance.rippleFingateInstance;
       expect(fingate instanceof RippleFingate).toBe(true);
     })
 
-    it("should be inited once if ripple instance is inited", async function() {
+    it("should be inited once if ripple instance is inited", async function () {
       const instance = await fingateInstance.init("ripple");
       const fingate = instance.rippleFingateInstance;
       const instance1 = await fingateInstance.init("ripple");
@@ -36,13 +42,13 @@ describe('deposit instance', () => {
       expect(fingate).toBe(fingate1);
     })
 
-    it("should be inited if bizain instance isn't inited", async function() {
+    it("should be inited if bizain instance isn't inited", async function () {
       const instance = await fingateInstance.init("bizain");
       const fingate = instance.bizainFingateInstance;
       expect(fingate instanceof BizainFingate).toBe(true);
     })
 
-    it("should be inited once if bizain instance is inited", async function() {
+    it("should be inited once if bizain instance is inited", async function () {
       const instance = await fingateInstance.init("bizain");
       const fingate = instance.bizainFingateInstance;
       const instance1 = await fingateInstance.init("bizain");
@@ -50,24 +56,66 @@ describe('deposit instance', () => {
       expect(fingate).toBe(fingate1);
     })
 
-    it("should be inited if stream instance isn't inited", async function() {
+    it("should be inited if stream instance isn't inited", async function () {
       const instance = await fingateInstance.init("stream");
       const fingate = instance.stmFingateInstance;
       expect(fingate instanceof StreamFingate).toBe(true);
     })
 
-    it("should be inited once if stream instance is inited", async function() {
+    it("should be inited once if stream instance is inited", async function () {
       const instance = await fingateInstance.init("stream");
       const fingate = instance.stmFingateInstance;
       const instance1 = await fingateInstance.init("stream");
       const fingate1 = instance1.stmFingateInstance;
       expect(fingate).toBe(fingate1);
     })
+
+    it("should be inited instance of bvcadt ", async function () {
+      const instance = await fingateInstance.init("bvcadt");
+      const fingate = instance.bvcadtFingateInstance;
+      expect(fingate).toEqual(BvcadtFingate.init());
+    })
+
+    it("should be inited once if bvcadt instance is inited", async function () {
+      const instance = await fingateInstance.init("bvcadt");
+      const fingate = instance.bvcadtFingateInstance;
+      const instance1 = await fingateInstance.init("bvcadt");
+      const fingate1 = instance1.bvcadtFingateInstance;
+      expect(fingate).toBe(fingate1);
+    })
+
+    it("should be inited instance of tron ", async function () {
+      const instance = await fingateInstance.init("tron", tronNode);
+      const fingate = instance.tronFingateInstance;
+      expect(fingate).toEqual(TronFingate.init(tronNode));
+    })
+
+    it("should be inited once if tron instance is inited", async function () {
+      const instance = await fingateInstance.init("tron", tronNode);
+      const fingate = instance.tronFingateInstance;
+      const instance1 = await fingateInstance.init("tron", tronNode);
+      const fingate1 = instance1.tronFingateInstance;
+      expect(fingate).toBe(fingate1);
+    })
+
+    it("should be inited instance of eos ", async function () {
+      const instance = await fingateInstance.init("eos", eosNode);
+      const fingate = instance.eosFingateInstance;
+      expect(fingate).toEqual(EosFingate.init(eosNode));
+    })
+
+    it("should be inited once if bvcadt instance is inited", async function () {
+      const instance = await fingateInstance.init("eos", eosNode);
+      const fingate = instance.bvcadtFingateInstance;
+      const instance1 = await fingateInstance.init("eos", eosNode);
+      const fingate1 = instance1.bvcadtFingateInstance;
+      expect(fingate).toBe(fingate1);
+    })
   })
 
-  describe("test initWithContract", function() {
+  describe("test initWithContract", function () {
 
-    describe("test moac", function() {
+    describe("test moac", function () {
       const { Moac, Fingate, ERC20 } = require("jcc-moac-utils");
       const node = "http://localhost";
       const scAddress = "0x66c9b619215db959ec137ede6b96f3fa6fd35a8a";
@@ -77,7 +125,7 @@ describe('deposit instance', () => {
         fingateInstance.destroy()
       })
 
-      it("should be inited if instance isn't inited and contract isn't empty", async function() {
+      it("should be inited if instance isn't inited and contract isn't empty", async function () {
         const instance = await fingateInstance.initWithContract("moac", node, scAddress, contract);
         const { moacInstance, moacFingateInstance, moacERC20Instance } = instance;
         expect(moacInstance instanceof Moac).toBe(true);
@@ -106,7 +154,7 @@ describe('deposit instance', () => {
         expect(instance4.moacERC20Instance._address).toBe("0x86Fa049857E0209aa7D9e616F7eb3b3B78ECfdb0");
       })
 
-      it("should be inited if instance isn't inited and contract is empty", async function() {
+      it("should be inited if instance isn't inited and contract is empty", async function () {
         const instance = await fingateInstance.initWithContract("moac", node, scAddress);
         const { moacInstance, moacFingateInstance, moacERC20Instance } = instance;
         expect(moacInstance instanceof Moac).toBe(true);
@@ -115,7 +163,7 @@ describe('deposit instance', () => {
       })
     })
 
-    describe("test ethereum", function() {
+    describe("test ethereum", function () {
       const { Ethereum, Fingate, ERC20 } = require("jcc-ethereum-utils");
       const node = "http://localhost";
       const scAddress = "0x3907acb4c1818adf72d965c08e0a79af16e7ffb8";
@@ -125,7 +173,7 @@ describe('deposit instance', () => {
         fingateInstance.destroy()
       })
 
-      it("should be inited if instance isn't inited and contract isn't empty", async function() {
+      it("should be inited if instance isn't inited and contract isn't empty", async function () {
         const instance = await fingateInstance.initWithContract("ethereum", node, scAddress, contract);
         const { ethereumInstance, ethereumFingateInstance, ethereumERC20Instance } = instance;
         expect(ethereumInstance instanceof Ethereum).toBe(true);
@@ -154,7 +202,7 @@ describe('deposit instance', () => {
         expect(instance4.ethereumERC20Instance._address).toBe("0x86Fa049857E0209aa7D9e616F7eb3b3B78ECfdb0");
       })
 
-      it("should be inited if instance isn't inited and contract is empty", async function() {
+      it("should be inited if instance isn't inited and contract is empty", async function () {
         const instance = await fingateInstance.initWithContract("ethereum", node, scAddress);
         const { ethereumInstance, ethereumFingateInstance, ethereumERC20Instance } = instance;
         expect(ethereumInstance instanceof Ethereum).toBe(true);

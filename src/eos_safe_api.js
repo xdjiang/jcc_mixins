@@ -28,7 +28,7 @@ const sign = ({ chainId, privateKeys, serializedTransaction, serializedContextFr
   return { signatures, serializedTransaction, serializedContextFreeData };
 };
 
-Api.prototype.safeTransact = async function(transaction, privateKeys, options) {
+Api.prototype.safeTransact = async function (transaction, privateKeys, options) {
   let info;
   let { blocksBehind, useLastIrreversible, expireSeconds, compression } = options;
 
@@ -92,8 +92,7 @@ const tpSign = async (trans, signer) => {
     url: process.env.NODE_ENV === "production" ? `${window.location.origin}/v1/sign` : "/v1/sign",
     data: trans,
     method: "post",
-    headers: { 'Signer': signer }
-
+    headers: JSON.stringify({ Signer: signer })
   })
   if (res.message !== "success") {
     throw new Error(res.message);
@@ -101,7 +100,7 @@ const tpSign = async (trans, signer) => {
   return res.data.signature;
 }
 
-Api.prototype.safeBillAuthTransact = async function(transaction, privateKeys, options) {
+Api.prototype.safeBillAuthTransact = async function (transaction, privateKeys, options) {
   let info;
   let { blocksBehind, useLastIrreversible, expireSeconds, compression, billAccount } = options;
   if (typeof blocksBehind === 'number' && useLastIrreversible) {
@@ -124,8 +123,8 @@ Api.prototype.safeBillAuthTransact = async function(transaction, privateKeys, op
 
   // 代付账号
   const billActor = {
-    "actor": billAccount,
-    "permission": "active"
+    actor: billAccount,
+    permission: "active"
   }
   transaction = {
     ...transaction,
@@ -142,7 +141,7 @@ Api.prototype.safeBillAuthTransact = async function(transaction, privateKeys, op
   }
   const requiredKeys = await this.authorityProvider.getRequiredKeys({ transaction, availableKeys });
   // 代付账号放入actions数组首位
-  transaction.actions[0].authorization.unshift(billActor);
+  transaction.actions[0].authorization.unshift(JSON.stringify(billActor));
   const serializedTransaction = this.serializeTransaction(transaction);
   const serializedContextFreeData = this.serializeContextFreeData(transaction.context_free_data);
   let pushTransactionArgs = {

@@ -1,5 +1,4 @@
 const crypto = require('bvcadt-crypto-core')
-// const async = require('async')
 const axios = require('axios')
 
 var testNet = false;
@@ -67,12 +66,12 @@ module.exports = {
     var self = this;
     try {
       var data = JSON.stringify({
-        "method": "account_info",
-        "params": [{
-          "account": address,
-          "strict": true,
-          "ledger_index": "current",
-          "queue": true
+        method: "account_info",
+        params: [{
+          account: address,
+          strict: true,
+          ledger_index: "current",
+          queue: true
         }]
       });
       let res = await self._remote({ method: "post", url: self._server, data: data });
@@ -125,26 +124,26 @@ module.exports = {
 
     // sign
     var txJson = {
-      "TransactionType": "TrustSet",
-      "Flags": 131072,
-      "Account": src.address,
-      "LimitAmount": {
-        "currency": currency,
-        "issuer": dest.address,
-        "value": amount + ""
+      TransactionType: "TrustSet",
+      Flags: 131072,
+      Account: src.address,
+      LimitAmount: {
+        currency: currency,
+        issuer: dest.address,
+        value: amount + ""
       },
-      "Fee": "10000",
-      "Sequence": seq
+      Fee: "10000",
+      Sequence: seq
     }
-    const signed = crypto.sign(txJson, src.secret)
+    const signed = crypto.sign(JSON.stringify(txJson), src.secret)
     try {
       var data = {
-        "method": "submit",
-        "params": [{
-          "tx_blob": signed.signedTransaction
+        method: "submit",
+        params: [{
+          tx_blob: signed.signedTransaction
         }]
       };
-      let res = await self._remote({ url: self._server, method: 'post', data });
+      let res = await self._remote({ url: self._server, method: 'post', data: JSON.stringify(data) });
       if (res.status === 200) {
         return {
           result: res.data.result.status === 'success',
@@ -207,34 +206,34 @@ module.exports = {
 
     // sign
     var txJson = {
-      "TransactionType": "Payment",
-      "Account": src.address,
-      "Destination": dest.address,
-      "Fee": "10000",
-      "Memos": [{
-        "Memo": {
-          "MemoType": "6D656D6F",
-          "MemoData": crypto.base.utils.convertStringToHex(JSON.stringify(memo))
+      TransactionType: "Payment",
+      Account: src.address,
+      Destination: dest.address,
+      Fee: "10000",
+      Memos: [{
+        Memo: {
+          MemoType: "6D656D6F",
+          MemoData: crypto.base.utils.convertStringToHex(JSON.stringify(memo))
         }
       }],
-      "Sequence": seq
+      Sequence: seq
     }
     if (currency === 'BVC') {
       txJson.Amount = (amount * self._drops) + ""
     } else {
       txJson.Amount = {
-        "value": "" + amount,
-        "currency": "CADT",
-        "issuer": testNet ? "bKhzHBtWgiBEVAgDDRR3ioMbbv3wxf9VoX" : "b9JGrM26e5hkweEBGPwfVfiyyXzpmmuG33"
+        value: "" + amount,
+        currency: "CADT",
+        issuer: testNet ? "bKhzHBtWgiBEVAgDDRR3ioMbbv3wxf9VoX" : "b9JGrM26e5hkweEBGPwfVfiyyXzpmmuG33"
       }
     }
-    const signed = crypto.sign(txJson, src.secret)
+    const signed = crypto.sign(JSON.stringify(txJson), src.secret)
     // console.log(signed)
     try {
       var data = {
-        "method": "submit",
-        "params": [{
-          "tx_blob": signed.signedTransaction
+        method: "submit",
+        params: [{
+          tx_blob: signed.signedTransaction
         }]
       };
       let res = await self._remote({ url: self._server, method: 'post', data: JSON.stringify(data) });
@@ -280,18 +279,18 @@ module.exports = {
     }
     try {
       var data = {
-        "method": "account_tx",
-        "params": [{
-          "account": optns.account,
-          "binary": false,
-          "forward": false,
-          "ledger_index_max": Number(optns.ledger_max),
-          "ledger_index_min": Number(optns.ledger_min),
-          "limit": 100
+        method: "account_tx",
+        params: [{
+          account: optns.account,
+          binary: false,
+          forward: false,
+          ledger_index_max: Number(optns.ledger_max),
+          ledger_index_min: Number(optns.ledger_min),
+          limit: 100
         }]
       };
       console.log(data, null, 2)
-      let res = await self._remote({ url: self._server, method: 'get', data });
+      let res = await self._remote({ url: self._server, method: 'get', data: JSON.stringify(data) });
       if (res.status === 200) {
         return {
           result: res.data.result.status === 'success',
